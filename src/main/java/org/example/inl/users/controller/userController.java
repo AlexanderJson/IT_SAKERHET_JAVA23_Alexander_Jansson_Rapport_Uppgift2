@@ -30,14 +30,8 @@ public class userController {
 
     @PostMapping ("/register")
     public ResponseEntity<?> postUser(@RequestBody userDTO consoleUser) throws IllegalAccessException {
-
-        User newUser = new User();
-
-            newUser.setEmail(consoleUser.getEmail());
-            newUser.setPassword(consoleUser.getPassword());
-            userService.addUser(newUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-
+                userService.addUser(consoleUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
 
@@ -58,9 +52,12 @@ public class userController {
     @DeleteMapping ("/remove/{email}")
     public String removeUser(@PathVariable("email") String consoleEmailDelete) {
 
-        userService.removeUser(consoleEmailDelete);
-
-        return "USER DELETED: " + consoleEmailDelete;
+        boolean deletedUserSuccess = userService.removeUser(consoleEmailDelete);
+        if (deletedUserSuccess) {
+            return "User deleted successfully" + consoleEmailDelete;
+        } else {
+            return "Can't leave app" + consoleEmailDelete;
+        }
     }
 
     @PatchMapping("/update{id}/")
