@@ -34,6 +34,9 @@ public class console {
                 case 2:
                     loginUser();
                     break;
+                    case 3:
+                        deleteUser();
+                        break;
         }
 
     }
@@ -100,6 +103,18 @@ public class console {
         String response = restTemplate.postForObject(url,request,String.class);
         System.out.println("RESPONSE" + response);
         //TO-DO : reponse entity?
+
+    }
+
+    public void deleteUser(){
+        restTemplate = new RestTemplate();
+        System.out.println("Please choose your email: ");
+        String emailInputDelete = s.nextLine();
+        System.out.println("Email entered: " + emailInputDelete);
+
+        String url = "http://localhost:8080/users/remove/" + emailInputDelete;
+        System.out.println(url);
+        restTemplate.delete(url);
 
     }
 }

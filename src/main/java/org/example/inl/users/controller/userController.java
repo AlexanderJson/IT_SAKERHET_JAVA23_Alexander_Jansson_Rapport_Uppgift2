@@ -47,7 +47,7 @@ public class userController {
         boolean authenticated = userService.authenticateUser(consoleUserLogin);
         if (authenticated) {
             // to-do säkerhetsgrejwer här
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok("Login successful" + consoleUserLogin.getEmail());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect login details");
         }
@@ -55,9 +55,12 @@ public class userController {
 
 
 
-    @DeleteMapping ("/remove/{id}")
-    public String removeUser(@PathVariable Long id) {
-        return "Hello, World!";
+    @DeleteMapping ("/remove/{email}")
+    public String removeUser(@PathVariable("email") String consoleEmailDelete) {
+
+        userService.removeUser(consoleEmailDelete);
+
+        return "USER DELETED: " + consoleEmailDelete;
     }
 
     @PatchMapping("/update{id}/")
