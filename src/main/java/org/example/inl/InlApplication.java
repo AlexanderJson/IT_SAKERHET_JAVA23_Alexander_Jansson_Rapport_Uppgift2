@@ -1,29 +1,33 @@
 package org.example.inl;
 
+import org.example.inl.users.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.Console;
 import java.util.Scanner;
 
 @SpringBootApplication
+
 public class InlApplication {
 
+
     public static void main(String[] args) {
+
         SpringApplication.run(InlApplication.class, args);
+
+
+        console c = new console();
+        c.Options();
     }
-
-
-
-    Scanner s = new Scanner(System.in);
-    private void registerForm(){
-        System.out.println("Please choose your email: ");
-        String email = s.nextLine();
-        System.out.println("Please choose your password: ");
-        String password = s.nextLine();
-
-
-
-
-    }
-
 }

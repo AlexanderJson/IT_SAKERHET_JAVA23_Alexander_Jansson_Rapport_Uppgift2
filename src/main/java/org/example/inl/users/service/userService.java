@@ -36,8 +36,8 @@ public class userService {
 
 
     // CREATE
-    public void addUser(User user) {
-        UserRepo.save(user);
+    public void addUser(User createdUser) {
+        UserRepo.save(createdUser);
     }
 
 

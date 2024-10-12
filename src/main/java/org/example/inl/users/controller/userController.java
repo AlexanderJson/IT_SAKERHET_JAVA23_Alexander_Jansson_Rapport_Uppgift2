@@ -1,9 +1,19 @@
 package org.example.inl.users.controller;
 
+import org.example.inl.users.model.User;
+import org.example.inl.users.service.userService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class userController {
+
+    private final org.example.inl.users.service.userService userService;
+
+    public userController(userService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/get/{id}")
     public String getUser(@PathVariable Long id) {
@@ -16,8 +26,14 @@ public class userController {
     }
 
     @PostMapping ("/register")
-    public String postUser() {
-        return "Hello, World!";
+    public ResponseEntity<User> postUser(@RequestBody User consoleUser) {
+
+        User newUser = new User();
+        newUser.setEmail(consoleUser.getEmail());
+        newUser.setPassword(consoleUser.getPassword());
+        userService.addUser(newUser);
+
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
 
@@ -26,7 +42,7 @@ public class userController {
         return "Hello, World!";
     }
 
-    @PatchMapping("/update{id}/{")
+    @PatchMapping("/update{id}/")
     public String patchUser(@PathVariable Long id) {
         return "Hello, World!";
     }
