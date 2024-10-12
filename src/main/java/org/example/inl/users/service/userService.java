@@ -36,7 +36,11 @@ public class userService {
 
 
     // CREATE
-    public void addUser(User createdUser) {
+    public void addUser(User createdUser) throws IllegalAccessException {
+
+        if(createdUser.getEmail() == null || createdUser.getPassword() == null) {
+            throw new IllegalArgumentException("Email and password fields cant be left empty");
+        }
         UserRepo.save(createdUser);
     }
 

@@ -1,6 +1,7 @@
 package org.example.inl.users.controller;
 
 import org.example.inl.users.model.User;
+import org.example.inl.users.model.userDTO;
 import org.example.inl.users.service.userService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class userController {
 
-    private final org.example.inl.users.service.userService userService;
+    private final userService userService;
+    private final userDTO userDTO = new userDTO();
 
-    public userController(userService userService) {
+    public userController(userService userService ) {
         this.userService = userService;
     }
 
@@ -26,14 +28,15 @@ public class userController {
     }
 
     @PostMapping ("/register")
-    public ResponseEntity<User> postUser(@RequestBody User consoleUser) {
+    public ResponseEntity<?> postUser(@RequestBody userDTO consoleUser) throws IllegalAccessException {
 
         User newUser = new User();
-        newUser.setEmail(consoleUser.getEmail());
-        newUser.setPassword(consoleUser.getPassword());
-        userService.addUser(newUser);
 
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+            newUser.setEmail(consoleUser.getEmail());
+            newUser.setPassword(consoleUser.getPassword());
+            userService.addUser(newUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+
     }
 
 
@@ -46,6 +49,16 @@ public class userController {
     public String patchUser(@PathVariable Long id) {
         return "Hello, World!";
     }
+
+
+
+    // Error management
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }
 
 

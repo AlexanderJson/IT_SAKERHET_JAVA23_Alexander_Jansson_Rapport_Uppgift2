@@ -5,12 +5,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
 public class userDTO {
 
-    private String username;
+    private String email;
+    private String password;
 
-    public userDTO(String username) {
-        this.username = username;
-    }
+    public userDTO() {}
+
+
 
 }

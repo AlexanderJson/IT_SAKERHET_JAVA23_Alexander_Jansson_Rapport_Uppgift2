@@ -1,6 +1,7 @@
 package org.example.inl;
 
 import org.example.inl.users.model.User;
+import org.example.inl.users.model.userDTO;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,24 +36,31 @@ public class console {
 
     private void registerUser(){
         System.out.println("Please choose your email: ");
-        System.out.println("Please choose your email: ");
-        String email = s.nextLine();
+        String emailInput = s.nextLine();
         System.out.println("Please choose your password: ");
-        String password = s.nextLine();
+        String passwordInput = s.nextLine();
+
+        System.out.println("Email entered: " + emailInput);
+        System.out.println("Password entered: " + passwordInput);
+
 
         // will return data as body to header
-        User consoleUser = new User();
-        consoleUser.setEmail(email);
-        consoleUser.setPassword(password);
-
+        userDTO consoleUser = new userDTO();
+        consoleUser.setEmail(emailInput);
+        consoleUser.setPassword(passwordInput);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<User> request = new HttpEntity<>(consoleUser, headers);
+        HttpEntity<userDTO> request = new HttpEntity<>(consoleUser, headers);
 
         String url = "http://localhost:8080/register";
+        System.out.println("userDTO email: " + consoleUser.getEmail());
+        System.out.println("userDTO password: " + consoleUser.getPassword());
+
+
         String response = restTemplate.postForObject(url,request,String.class);
+        System.out.println("RESPONSE" + response);
         //TO-DO : reponse entity?
 
     }
