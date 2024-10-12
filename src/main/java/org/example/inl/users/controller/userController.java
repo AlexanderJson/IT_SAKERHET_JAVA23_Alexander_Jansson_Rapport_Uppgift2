@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/users")
 public class userController {
 
     private final userService userService;
@@ -38,6 +39,20 @@ public class userController {
             return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
 
     }
+
+
+    @PostMapping ("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody userDTO consoleUserLogin) throws IllegalAccessException {
+
+        boolean authenticated = userService.authenticateUser(consoleUserLogin);
+        if (authenticated) {
+            // to-do säkerhetsgrejwer här
+            return ResponseEntity.ok("Login successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect login details");
+        }
+    }
+
 
 
     @DeleteMapping ("/remove/{id}")

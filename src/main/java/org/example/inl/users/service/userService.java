@@ -2,6 +2,7 @@ package org.example.inl.users.service;
 
 
 import org.example.inl.users.model.User;
+import org.example.inl.users.model.userDTO;
 import org.example.inl.users.repository.userRepo;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +51,17 @@ public class userService {
         UserRepo.save(user);
     }
 
+
+    // AUTHENTICATE
+    public boolean authenticateUser(userDTO loginUser) throws IllegalAccessException {
+
+        if(loginUser.getEmail() == null || loginUser.getPassword() == null) {
+            throw new IllegalArgumentException("SERVICE: Email and password fields cant be left empty");
+        }
+
+
+        User foundUser = UserRepo.findByEmail(loginUser.getEmail());
+        return foundUser.getPassword().equals(loginUser.getPassword());
+    }
 
 }
