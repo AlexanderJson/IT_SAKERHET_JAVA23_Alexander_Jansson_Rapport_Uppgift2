@@ -63,7 +63,7 @@ public class console {
 
         HttpEntity<userDTO> request = new HttpEntity<>(consoleUserLogin, headers);
 
-        String url = "http://localhost:8080/users/login";
+        String url = "http://localhost:8080/authenticate";
         System.out.println("userDTO email: " + consoleUserLogin.getEmail());
         System.out.println("userDTO password: " + consoleUserLogin.getPassword());
 
