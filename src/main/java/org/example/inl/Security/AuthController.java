@@ -1,7 +1,9 @@
 package org.example.inl.Security;
 
 import org.example.inl.Security.JWT.JwTUtil;
+import org.example.inl.users.model.User;
 import org.example.inl.users.model.userDTO;
+import org.example.inl.users.repository.userRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +23,8 @@ public class AuthController {
     private JwTUtil jwtUtil;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private userRepo UserRepo;
 
     private void authenticate(String username, String password) throws Exception {
         try{
@@ -30,17 +34,17 @@ public class AuthController {
         }
     }
 
-
+        // spara på server?
     @PostMapping("/authenticate")
     public ResponseEntity<?> createJwTToken(@RequestBody userDTO authReq) throws Exception {
         authenticate(authReq.getEmail(), authReq.getPassword());
 
-        String jwtToken = jwtUtil.generateToken(authReq.getEmail());
-        System.out.println("Generated token" + jwtToken);
+        User user = UserRepo.findByEmail(authReq.getEmail());
+        Long userId = user.getId();
+
+        String jwtToken = jwtUtil.generateToken(authReq.getEmail(), userId);
+        System.out.println("User ID " + userId + "Generated token" + jwtToken);
         return ResponseEntity.ok(Collections.singletonMap("token", jwtToken));
     }
-
-
-
 }
 

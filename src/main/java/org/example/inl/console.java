@@ -1,5 +1,6 @@
 package org.example.inl;
 
+import org.example.inl.transactions.model.Transaction;
 import org.example.inl.users.model.User;
 import org.example.inl.users.model.userDTO;
 import org.springframework.http.HttpEntity;
@@ -17,7 +18,7 @@ public class console {
 
     private static final Scanner s = new Scanner(System.in);
     RestTemplate restTemplate;
-
+    private String jwtToken;
     public console() {
         restTemplate = new RestTemplate();
     }
@@ -37,8 +38,33 @@ public class console {
                     case 3:
                         deleteUser();
                         break;
+                        case 4:
+                            viewTransactions();
+                            break;
+                        case 5:
+                            printToken();
+                            break;
+
         }
 
+    }
+
+    private void viewTransactions() {
+        System.out.println("write id");
+        Long userId = s.nextLong();
+        s.nextLine();
+
+        String url = "http://localhost:8080/transactions/user/" + userId;
+        Transaction[] transactions = restTemplate.getForObject(url, Transaction[].class);
+        if(transactions != null && transactions.length > 0){
+            for(Transaction transaction : transactions){
+                System.out.println(transaction.getId());
+                System.out.println(transaction.getAmount());
+                System.out.println(transaction.getDate());
+                System.out.println(transaction.getName());
+            }
+        }
+        Options();
     }
 
     private void loginUser(){
@@ -70,7 +96,15 @@ public class console {
 
         String response = restTemplate.postForObject(url,request,String.class);
         System.out.println("RESPONSE" + response);
+        viewTransactions();
         //TO-DO : reponse entity?
+
+        if(response.contains("token")){
+            jwtToken = response.substring(response.indexOf("token\":\"") + 8, response.length() - 2);
+            System.out.println("Token: " + jwtToken);
+
+        }
+        Options();
 
     }
 
@@ -103,6 +137,7 @@ public class console {
         String response = restTemplate.postForObject(url,request,String.class);
         System.out.println("RESPONSE" + response);
         //TO-DO : reponse entity?
+        Options();
 
     }
 
@@ -115,6 +150,18 @@ public class console {
         String url = "http://localhost:8080/users/remove/" + emailInputDelete;
         System.out.println(url);
         restTemplate.delete(url);
+        Options();
 
     }
+
+    private void printToken(){
+        if(jwtToken != null){
+            System.out.println("Current: " + jwtToken);
+        } else {
+            System.out.println("Current: null");
+        }        Options();
+
+    }
+
+
 }

@@ -18,8 +18,9 @@ public class JwTUtil {
 
     private final Key KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    public String generateToken(String username){
+    public String generateToken(String username, Long userId){
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
         return tokenBuilder(claims, username);
     }
 
@@ -61,5 +62,10 @@ public class JwTUtil {
 
     public Date extractExpiration(String token){
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Long extractId(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.get("userId", Long.class);
     }
 }

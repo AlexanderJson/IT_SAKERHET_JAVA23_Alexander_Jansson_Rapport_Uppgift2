@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class userController {
@@ -20,12 +22,12 @@ public class userController {
 
     @GetMapping("/get/{id}")
     public String getUser(@PathVariable Long id) {
-        return "Hello, World!";
+        return "Hello, Worlld!";
     }
 
     @GetMapping("/get/")
-    public String getUsers() {
-        return "Hello, World!";
+    public List<User> getUsers() {
+        return userService.getAllUsers();
     }
 
     @PostMapping ("/register")
