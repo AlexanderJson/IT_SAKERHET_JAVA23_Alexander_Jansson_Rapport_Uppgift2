@@ -24,10 +24,8 @@ public class InlApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(InlApplication.class, args);
-
-
-        console c = new console();
-        c.Options();
+        ApplicationContext context = SpringApplication.run(InlApplication.class, args);
+        ConsoleApp console = context.getBean(ConsoleApp.class);
+        console.options();
     }
 }

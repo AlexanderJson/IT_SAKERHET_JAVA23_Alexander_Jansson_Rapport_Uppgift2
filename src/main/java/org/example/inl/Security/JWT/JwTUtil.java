@@ -21,6 +21,7 @@ public class JwTUtil {
     public String generateToken(String username, Long userId){
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
+        System.out.println("Generated Token: " + tokenBuilder(claims, username));
         return tokenBuilder(claims, username);
     }
 

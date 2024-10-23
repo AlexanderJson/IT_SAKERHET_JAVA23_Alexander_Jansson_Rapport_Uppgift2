@@ -1,31 +1,35 @@
 package org.example.inl;
 
+import org.example.inl.Security.JWT.JwTUtil;
 import org.example.inl.transactions.model.Transaction;
+import org.example.inl.transactions.model.TransactionDTO;
 import org.example.inl.users.model.User;
 import org.example.inl.users.model.userDTO;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 @Component
-public class console {
-
+public class ConsoleApp {
 
 
     private static final Scanner s = new Scanner(System.in);
     RestTemplate restTemplate;
     private String jwtToken;
-    public console() {
-        restTemplate = new RestTemplate();
-    }
+
+    @Autowired
+    private JwTUtil jwTUtil;
+
+    public ConsoleApp() {
+        restTemplate = new RestTemplate();}
 
 
-    public void Options() {
-        System.out.println("1) Register - 2) Login");
+    public void options() {
+        System.out.println("1) Register - 2) Login - 3) Delete user - 4) View transactions - 5) Add token - 6) Get token");
         int input = s.nextInt();
         s.nextLine();
         switch(input){
@@ -42,6 +46,9 @@ public class console {
                             viewTransactions();
                             break;
                         case 5:
+                            addTransaction();
+                            break;
+                        case 6:
                             printToken();
                             break;
 
@@ -49,22 +56,61 @@ public class console {
 
     }
 
-    private void viewTransactions() {
-        System.out.println("write id");
-        Long userId = s.nextLong();
-        s.nextLine();
+    //  name, amount, isRecurring(y/n), type( (1): online shopping -  (2): IRL shopping - (3): Monthly Expense ),
 
-        String url = "http://localhost:8080/transactions/user/" + userId;
-        Transaction[] transactions = restTemplate.getForObject(url, Transaction[].class);
-        if(transactions != null && transactions.length > 0){
+    private void addTransaction(){
+        System.out.println("Product name: ");
+        String nameInput = s.nextLine();
+
+        System.out.println("Transaction amount: ");
+        String amountInput = s.nextLine();
+
+
+        // will return data as body to header
+        TransactionDTO transaction = new TransactionDTO();
+        transaction.setName(nameInput);
+        transaction.setAmount(amountInput);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<TransactionDTO> request = new HttpEntity<>(transaction, headers);
+
+        String url = "http://localhost:8080/transactions/add";
+        System.out.println("Amount: " + transaction.getAmount());
+        System.out.println("Name: " + transaction.getName());
+
+
+        String response = restTemplate.postForObject(url,request,String.class);
+        System.out.println("RESPONSE" + response);
+        options();
+    }
+
+    private void viewTransactions() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+
+        String url = "http://localhost:8080/transactions/user";
+        ResponseEntity<Transaction[]> response = restTemplate.exchange(url, HttpMethod.GET,  request, Transaction[].class);
+
+        Transaction[] transactions = response.getBody();
+        if(transactions != null){
+            System.out.println("Transaction History: ");
             for(Transaction transaction : transactions){
-                System.out.println(transaction.getId());
-                System.out.println(transaction.getAmount());
-                System.out.println(transaction.getDate());
-                System.out.println(transaction.getName());
+                System.out.println("Transaction ID: " + transaction.getId());
+                System.out.println("User: " + transaction.getUserId());
+                System.out.println("Name: " + transaction.getName());
+                System.out.println("Amount: " + transaction.getAmount());
+                System.out.println("Created At: " + transaction.getCreatedAt());
             }
+        }  else {
+            System.out.println("No transactions found");
         }
-        Options();
+        options();
     }
 
     private void loginUser(){
@@ -96,15 +142,15 @@ public class console {
 
         String response = restTemplate.postForObject(url,request,String.class);
         System.out.println("RESPONSE" + response);
-        viewTransactions();
         //TO-DO : reponse entity?
 
+        assert response != null;
         if(response.contains("token")){
             jwtToken = response.substring(response.indexOf("token\":\"") + 8, response.length() - 2);
             System.out.println("Token: " + jwtToken);
 
         }
-        Options();
+        options();
 
     }
 
@@ -136,8 +182,7 @@ public class console {
 
         String response = restTemplate.postForObject(url,request,String.class);
         System.out.println("RESPONSE" + response);
-        //TO-DO : reponse entity?
-        Options();
+        options();
 
     }
 
@@ -150,18 +195,19 @@ public class console {
         String url = "http://localhost:8080/users/remove/" + emailInputDelete;
         System.out.println(url);
         restTemplate.delete(url);
-        Options();
+        options();
 
     }
 
+    // för debugging
     private void printToken(){
         if(jwtToken != null){
             System.out.println("Current: " + jwtToken);
         } else {
-            System.out.println("Current: null");
-        }        Options();
+            System.out.println("Current: null : no token");
+        }
+        options();
 
     }
-
 
 }

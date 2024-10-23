@@ -47,6 +47,10 @@ public class userService {
 
     }
 
+    public User findByEmail(String email) {
+
+        return UserRepo.findByEmail(email);
+    }
 
     // CREATE
     public void addUser(userDTO createdUser) throws IllegalAccessException {

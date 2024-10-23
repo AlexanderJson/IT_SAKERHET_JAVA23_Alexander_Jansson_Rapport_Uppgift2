@@ -34,7 +34,7 @@ public class Transaction {
     private LocalDate isRecurring;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column

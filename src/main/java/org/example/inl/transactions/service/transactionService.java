@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +32,7 @@ public class transactionService {
     private final AESEncryption aesEncryption;
 
 
-    public transactionService(transactionRepo TransactionRepo, transactionRepo transactionRepo,userRepo UserRepo, AESEncryption aesEncryption) {
+    public transactionService( transactionRepo transactionRepo,userRepo UserRepo, AESEncryption aesEncryption) {
         this.TransactionRepo = transactionRepo;
         this.UserRepo = UserRepo;
         this.aesEncryption = aesEncryption;
@@ -42,8 +44,14 @@ public class transactionService {
 
         Transaction transaction = new Transaction();
         transaction.setUserId(user.getId());
-        String encryptedAmount = aesEncryption.encrypt(String.valueOf(transactionDTO.getAmount()));
+        String encryptedName = aesEncryption.encrypt(transactionDTO.getName());
+        transaction.setName(encryptedName);
+        String encryptedAmount = aesEncryption.encrypt(transactionDTO.getAmount());
         transaction.setAmount(encryptedAmount);
+        LocalDate created_at = LocalDate.now();
+        transaction.setCreatedAt(created_at);
+
+
         return TransactionRepo.save(transaction);
     }
 
@@ -58,10 +66,33 @@ public class transactionService {
     }*/
 
 
+    public Long getUserIdFromUsername(String username) {
+        User user = UserRepo.findByEmail(username);
+        return user.getId();
+    }
+
+
     // GET
-    public List<Transaction> getTransactionsByUserId(Long userId){
+    public List<Transaction> getTransactionsByUserId(Long userId) throws Exception {
+
+        List<Transaction> transactions = TransactionRepo.findByUserId(userId);
+        for (Transaction transaction : transactions) {
+
+            String decryptedName = aesEncryption.decrypt(transaction.getName());
+            transaction.setName(decryptedName);
+
+            String decryptedAmount = aesEncryption.decrypt(transaction.getAmount());
+            transaction.setAmount(decryptedAmount);
+
+            LocalDate created_at = transaction.getCreatedAt();
+            transaction.setCreatedAt(created_at);
+
+        }
+
         return TransactionRepo.findByUserId(userId);
     }
+
+
 
 
 }
