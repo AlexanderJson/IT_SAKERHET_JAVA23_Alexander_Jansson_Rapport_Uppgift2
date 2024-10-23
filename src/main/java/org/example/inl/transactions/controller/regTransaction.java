@@ -24,10 +24,10 @@ public class regTransaction {
     private org.example.inl.users.service.userService userService;
 
 
-    @GetMapping("/user/{userId}")
-    public List<Transaction> getTransactionByUserId(@PathVariable Long userId) throws Exception {
-        return Transactionservice.getTransactionsByUserId(userId);
-    }
+//    @GetMapping("/user/{userId}")
+//    public List<Transaction> getTransactionByUserId(@PathVariable Long userId) throws Exception {
+//        return Transactionservice.getTransactionsByUserId(userId);
+//    }
 
     @PostMapping("/add")
     public ResponseEntity<Transaction> addTransaction(@RequestBody TransactionDTO transactionDTO,

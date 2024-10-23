@@ -36,10 +36,10 @@ public class userService {
 
 
     // REMOVE
-    public boolean removeUser(String consoleEmailDelete) {
+    public boolean removeUser(String email) {
 
 
-        User foundUser = UserRepo.findByEmail(consoleEmailDelete);
+        User foundUser = UserRepo.findByEmail(email);
         if (foundUser != null) {
             UserRepo.delete(foundUser);
             return true;

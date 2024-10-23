@@ -56,7 +56,6 @@ public class ConsoleApp {
 
     }
 
-    //  name, amount, isRecurring(y/n), type( (1): online shopping -  (2): IRL shopping - (3): Monthly Expense ),
 
     private void addTransaction(){
         System.out.println("Product name: ");
@@ -66,7 +65,6 @@ public class ConsoleApp {
         String amountInput = s.nextLine();
 
 
-        // will return data as body to header
         TransactionDTO transaction = new TransactionDTO();
         transaction.setName(nameInput);
         transaction.setAmount(amountInput);
@@ -186,15 +184,16 @@ public class ConsoleApp {
 
     }
 
-    public void deleteUser(){
-        restTemplate = new RestTemplate();
-        System.out.println("Please choose your email: ");
-        String emailInputDelete = s.nextLine();
-        System.out.println("Email entered: " + emailInputDelete);
 
-        String url = "http://localhost:8080/users/remove/" + emailInputDelete;
-        System.out.println(url);
-        restTemplate.delete(url);
+
+
+    public void deleteUser(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        String url = "http://localhost:8080/users/remove";
+        restTemplate.exchange(url,HttpMethod.DELETE,request,String.class);
+        System.out.println("User deleted.");
         options();
 
     }

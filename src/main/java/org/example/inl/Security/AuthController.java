@@ -34,7 +34,6 @@ public class AuthController {
         }
     }
 
-        // spara på server?
     @PostMapping("/authenticate")
     public ResponseEntity<?> createJwTToken(@RequestBody userDTO authReq) throws Exception {
         authenticate(authReq.getEmail(), authReq.getPassword());

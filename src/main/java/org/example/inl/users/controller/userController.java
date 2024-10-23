@@ -1,10 +1,13 @@
 package org.example.inl.users.controller;
 
+import org.example.inl.Security.JWT.JwTUtil;
 import org.example.inl.users.model.User;
 import org.example.inl.users.model.userDTO;
 import org.example.inl.users.service.userService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,20 +18,14 @@ public class userController {
 
     private final userService userService;
     private final userDTO userDTO = new userDTO();
-
+    @Autowired
+    private JwTUtil jwTUtil;
     public userController(userService userService ) {
         this.userService = userService;
     }
 
-    @GetMapping("/get/{id}")
-    public String getUser(@PathVariable Long id) {
-        return "Hello, Worlld!";
-    }
 
-    @GetMapping("/get/")
-    public List<User> getUsers() {
-        return userService.getAllUsers();
-    }
+
 
     @PostMapping ("/register")
     public ResponseEntity<?> postUser(@RequestBody userDTO consoleUser) throws IllegalAccessException {
@@ -51,20 +48,24 @@ public class userController {
 
 
 
-    @DeleteMapping ("/remove/{email}")
-    public String removeUser(@PathVariable("email") String consoleEmailDelete) {
+    @DeleteMapping ("/remove")
+    public ResponseEntity<?> removeUser(@RequestHeader("Authorization") String token)  {
 
-        boolean deletedUserSuccess = userService.removeUser(consoleEmailDelete);
-        if (deletedUserSuccess) {
-            return "User deleted successfully" + consoleEmailDelete;
-        } else {
-            return "Can't leave app" + consoleEmailDelete;
-        }
+        String email = jwTUtil.extractedUsername(token.substring(7));
+       boolean deleted = userService.removeUser(email);
+
+       if (deleted) {
+           return ResponseEntity.ok("User deleted successfully");
+       }
+       else {
+           return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Failed to delete: " + email);
+       }
+
     }
 
     @PatchMapping("/update{id}/")
     public String patchUser(@PathVariable Long id) {
-        return "Hello, World!";
+        return "Inte implementerad!";
     }
 
 
