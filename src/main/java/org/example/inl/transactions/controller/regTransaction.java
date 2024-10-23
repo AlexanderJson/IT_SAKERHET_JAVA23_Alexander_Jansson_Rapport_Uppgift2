@@ -1,6 +1,9 @@
 package org.example.inl.transactions.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.example.inl.Security.JWT.JwTUtil;
 import org.example.inl.transactions.model.Transaction;
 import org.example.inl.transactions.model.TransactionDTO;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.SignatureException;
 import java.util.List;
 
 @RestController
@@ -46,6 +50,8 @@ public class regTransaction {
         List<Transaction> userTransactions = Transactionservice.getTransactionsByUserId(userId);
         return ResponseEntity.ok(userTransactions);
     }
+
+
 
 
 }
