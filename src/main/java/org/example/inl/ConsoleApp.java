@@ -1,10 +1,13 @@
 package org.example.inl;
 
+import jakarta.annotation.PostConstruct;
 import org.example.inl.Security.JWT.JwTUtil;
 import org.example.inl.Messages.model.Messages;
 import org.example.inl.Messages.model.MessagesDTO;
+import org.example.inl.Security.SecurityConfig;
 import org.example.inl.users.model.userDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -27,8 +30,9 @@ public class ConsoleApp {
         restTemplate = new RestTemplate();}
 
 
-    public void options()  {
 
+
+    public void options()  {
                 System.out.println("--------------- CONSOLE VERSION -------------------");
                 System.out.println("1) Register - 2) Login - 3) Delete user - 4) View messages - 5) Write message  -  6) Logout");
                 int input = s.nextInt();
