@@ -1,6 +1,7 @@
 package org.example.inl.users.service;
 
 
+import org.example.inl.Security.Encryption.AESEncryption;
 import org.example.inl.users.model.User;
 import org.example.inl.users.model.userDTO;
 import org.example.inl.users.repository.userRepo;
@@ -8,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +24,8 @@ public class userService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AESEncryption aesEncryption;
 
     public userService(userRepo userRepo) {
         UserRepo = userRepo;
@@ -53,15 +60,22 @@ public class userService {
     }
 
     // CREATE
-    public void addUser(userDTO createdUser) throws IllegalAccessException {
+    public void addUser(userDTO createdUser) throws IllegalAccessException, NoSuchAlgorithmException {
 
         if(createdUser.getEmail() == null || createdUser.getPassword() == null) {
             throw new IllegalArgumentException("Email and password fields cant be left empty");
         }
         String hashedPassword = passwordEncoder.encode(createdUser.getPassword());
+
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(128);
+        SecretKey secretKey = keyGenerator.generateKey();
+        String base64Key = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+
         User newUser = new User();
         newUser.setEmail(createdUser.getEmail());
         newUser.setPassword(hashedPassword);
+        newUser.setAesKey(base64Key);
 
         UserRepo.save(newUser);
     }
@@ -85,5 +99,7 @@ public class userService {
         User foundUser = UserRepo.findByEmail(loginUser.getEmail());
         return passwordEncoder.matches(loginUser.getPassword(), foundUser.getPassword());
     }
+
+
 
 }

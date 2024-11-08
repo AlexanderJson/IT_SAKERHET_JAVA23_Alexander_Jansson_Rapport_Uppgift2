@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class userController {
 
 
     @PostMapping ("/register")
-    public ResponseEntity<?> postUser(@RequestBody userDTO consoleUser) throws IllegalAccessException {
+    public ResponseEntity<?> postUser(@RequestBody userDTO consoleUser) throws IllegalAccessException, NoSuchAlgorithmException {
                 userService.addUser(consoleUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }

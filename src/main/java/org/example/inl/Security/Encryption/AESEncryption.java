@@ -16,14 +16,8 @@ public class AESEncryption {
     private static final String AES = "AES";
     //env sen
 
-    private final SecretKey secretKey;
 
-    public AESEncryption(SecretKey secretKey) {
-        this.secretKey = secretKey;
-    }
-
-
-    public String encrypt(String data) throws Exception {
+    public String encrypt(String data, SecretKey secretKey) throws Exception {
 
 
         // ifall input inte innehåller ett värde kommer den inte försöka encrypt/decrypt det, förhindrar stopp i program från frontend delen, ifall
@@ -42,7 +36,7 @@ public class AESEncryption {
         }
         return null;
     } ;
-    public String decrypt (String data) throws Exception {
+    public String decrypt (String data, SecretKey secretKey) throws Exception {
 
 
         if (data != null && !data.isEmpty()) {

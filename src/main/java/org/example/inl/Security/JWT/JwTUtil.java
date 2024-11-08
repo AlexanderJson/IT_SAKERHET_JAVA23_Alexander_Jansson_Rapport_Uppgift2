@@ -18,18 +18,23 @@ public class JwTUtil {
 
     private final Key KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
+    // hämtar data till payload (userid, username)
     public String generateToken(String username, Long userId){
         Map<String, Object> claims = new HashMap<>();
+        // lägger till userID till claims
         claims.put("userId", userId);
         System.out.println("Generated Token: " + tokenBuilder(claims, username));
         return tokenBuilder(claims, username);
     }
 
+    //skickar payload till builder, genererar header + payload
+    // + tar vår genererade nyckel -> (header+payload+key) = input till HS512 algoritmen
     private String tokenBuilder(Map<String, Object> claims,String subject){
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
+                // 10 timmar för testning
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(KEY)
                 .compact();

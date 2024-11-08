@@ -10,8 +10,12 @@ import org.example.inl.users.repository.userRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class messageService {
@@ -39,8 +43,14 @@ public class messageService {
 
         Messages messages = new Messages();
         messages.setUserId(user.getId());
-        String encryptedName = aesEncryption.encrypt(messagesDTO.getMessage());
+
+        String encodedKey = user.getAesKey();
+        byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
+        SecretKey secretKey = new SecretKeySpec(decodedKey, "AES");
+
+        String encryptedName = aesEncryption.encrypt(messagesDTO.getMessage(),secretKey);
         messages.setMessage(encryptedName);
+        System.out.println("Encrypted before saving: " + encryptedName);
         LocalDate created_at = LocalDate.now();
         messages.setCreatedAt(created_at);
 
@@ -60,10 +70,15 @@ public class messageService {
     // GET
     public List<Messages> getMessageByUserId(Long userId) throws Exception {
 
+        Optional<User> user = UserRepo.findById(userId);
+
+        String encodedKey = user.get().getAesKey();
+        byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
+        SecretKey secretKey = new SecretKeySpec(decodedKey, "AES");
+
         List<Messages> messages = messageRepository.findByUserId(userId);
         for (Messages message : messages) {
-
-            String decryptedName = aesEncryption.decrypt(message.getMessage());
+            String decryptedName = aesEncryption.decrypt(message.getMessage(),secretKey);
             message.setMessage(decryptedName);
 
             LocalDate created_at = message.getCreatedAt();
