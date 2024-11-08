@@ -90,6 +90,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of("http://localhost:*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
+
+        // så vi kan ta emot jwt tokens + content
         configuration.setExposedHeaders(Arrays.asList("Authorization",  "Content-Type"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization",  "Content-Type"));
 
