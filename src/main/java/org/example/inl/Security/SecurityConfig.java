@@ -40,10 +40,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                // tillåter cross origin requests från så requests kan skickas från vilken domän
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/authenticate","/users/register").permitAll()
-                                .anyRequest().authenticated())
+
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests.requestMatchers("/authenticate","/users/register").permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(daoAuthenticationConfigurer())
