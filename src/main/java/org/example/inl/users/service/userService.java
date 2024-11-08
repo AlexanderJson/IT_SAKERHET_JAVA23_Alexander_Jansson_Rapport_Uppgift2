@@ -66,7 +66,7 @@ public class userService {
             throw new IllegalArgumentException("Email and password fields cant be left empty");
         }
         String hashedPassword = passwordEncoder.encode(createdUser.getPassword());
-
+        System.out.println("Hashed Password: " + hashedPassword);
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(128);
         SecretKey secretKey = keyGenerator.generateKey();
