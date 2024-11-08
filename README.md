@@ -1,5 +1,4 @@
-
-
+[Click here for the frontend repository (still fully functional with only console)](https://github.com/AlexanderJson/frontend-client-timecapsule)
 
 
 ## Table of Contents
