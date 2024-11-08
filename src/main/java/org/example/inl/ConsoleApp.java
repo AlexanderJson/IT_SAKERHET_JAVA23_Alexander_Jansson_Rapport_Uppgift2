@@ -1,16 +1,15 @@
 package org.example.inl;
 
 import org.example.inl.Security.JWT.JwTUtil;
-import org.example.inl.transactions.model.Transaction;
-import org.example.inl.transactions.model.TransactionDTO;
-import org.example.inl.users.model.User;
+import org.example.inl.Messages.model.Messages;
+import org.example.inl.Messages.model.MessagesDTO;
 import org.example.inl.users.model.userDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.util.Scanner;
 
 @Component
@@ -28,86 +27,111 @@ public class ConsoleApp {
         restTemplate = new RestTemplate();}
 
 
-    public void options() {
-        System.out.println("1) Register - 2) Login - 3) Delete user - 4) View transactions - 5) Add token - 6) Get token");
-        int input = s.nextInt();
-        s.nextLine();
-        switch(input){
-            case 1:
-                registerUser();
-                break;
-                case 2:
-                    loginUser();
-                    break;
+    public void options()  {
+
+                System.out.println("--------------- CONSOLE VERSION -------------------");
+                System.out.println("1) Register - 2) Login - 3) Delete user - 4) View messages - 5) Write message  -  6) Logout");
+                int input = s.nextInt();
+                s.nextLine();
+                switch(input) {
+                    case 1:
+                        registerUser();
+                        break;
+                    case 2:
+                        loginUser();
+                        break;
                     case 3:
                         deleteUser();
                         break;
-                        case 4:
-                            viewTransactions();
-                            break;
-                        case 5:
-                            addTransaction();
-                            break;
-                        case 6:
-                            printToken();
-                            break;
+                    case 4:
+                        viewMessages();
+                        break;
+                    case 5:
+                        addMessage();
+                        break;
+
+                    case 6:
+                        logout();
+                        break;
+                    default:
+
+                               /* case 7:
+                                    printToken();                   // Använd denna metod för att debug så JWT token faktiskt skapas och är detsamma under session
+                                    break; */
 
         }
 
     }
 
 
-    private void addTransaction(){
-        System.out.println("Product name: ");
-        String nameInput = s.nextLine();
 
-        System.out.println("Transaction amount: ");
-        String amountInput = s.nextLine();
+    private void addMessage(){
+        System.out.println("Message: ");
+        String messageInput = s.nextLine();
 
-
-        TransactionDTO transaction = new TransactionDTO();
-        transaction.setName(nameInput);
-        transaction.setAmount(amountInput);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwtToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<TransactionDTO> request = new HttpEntity<>(transaction, headers);
-
-        String url = "http://localhost:8080/transactions/add";
-        System.out.println("Amount: " + transaction.getAmount());
-        System.out.println("Name: " + transaction.getName());
+        if (messageInput != null && !messageInput.isEmpty()) {
+            try {
+                MessagesDTO message = new MessagesDTO();
+                message.setMessage(messageInput);
 
 
-        String response = restTemplate.postForObject(url,request,String.class);
-        System.out.println("RESPONSE" + response);
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", "Bearer " + jwtToken);
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                HttpEntity<MessagesDTO> request = new HttpEntity<>(message, headers);
+
+                String url = "http://localhost:8080/messages/add";
+                System.out.println("Message: " + message.getMessage());
+
+
+                String response = restTemplate.postForObject(url, request, String.class);
+                System.out.println("RESPONSE" + response);
+            }
+
+
+            catch (HttpClientErrorException.Unauthorized e) {
+                System.out.println("Unauthorized, invalid user.");
+
+            }
+        } else {
+            System.out.println("Invalid input");
+        }
+
         options();
     }
 
-    private void viewTransactions() {
+    private void viewMessages() {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwtToken);
-        HttpEntity<String> request = new HttpEntity<>(headers);
+        try{
 
-
-        String url = "http://localhost:8080/transactions/user";
-        ResponseEntity<Transaction[]> response = restTemplate.exchange(url, HttpMethod.GET,  request, Transaction[].class);
-
-        Transaction[] transactions = response.getBody();
-        if(transactions != null){
-            System.out.println("Transaction History: ");
-            for(Transaction transaction : transactions){
-                System.out.println("Transaction ID: " + transaction.getId());
-                System.out.println("User: " + transaction.getUserId());
-                System.out.println("Name: " + transaction.getName());
-                System.out.println("Amount: " + transaction.getAmount());
-                System.out.println("Created At: " + transaction.getCreatedAt());
+            if(jwtToken == null){
+                System.out.println("JWT token either missing or expired. Please login again.");
             }
-        }  else {
-            System.out.println("No transactions found");
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            HttpEntity<String> request = new HttpEntity<>(headers);
+
+
+            String url = "http://localhost:8080/messages/user";
+            ResponseEntity<Messages[]> response = restTemplate.exchange(url, HttpMethod.GET,  request, Messages[].class);
+
+            Messages[] messages = response.getBody();
+            if(messages != null && messages.length > 0){
+                System.out.println("Messages History: ");
+                for(Messages message : messages){
+                    System.out.println("Message ID: " + message.getId());
+                    System.out.println("User: " + message.getUserId());
+                    System.out.println("Message: " + message.getMessage());
+                    System.out.println("Created At: " + message.getCreatedAt());
+                }
+            }  else {
+                System.out.println("No messages found");
+            }
+        }catch (HttpClientErrorException.Unauthorized e) {
+            System.out.println("Unauthorized, invalid user.");
         }
+
         options();
     }
 
@@ -146,7 +170,6 @@ public class ConsoleApp {
         if(response.contains("token")){
             jwtToken = response.substring(response.indexOf("token\":\"") + 8, response.length() - 2);
             System.out.println("Token: " + jwtToken);
-
         }
         options();
 
@@ -188,14 +211,26 @@ public class ConsoleApp {
 
 
     public void deleteUser(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwtToken);
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = "http://localhost:8080/users/remove";
-        restTemplate.exchange(url,HttpMethod.DELETE,request,String.class);
-        System.out.println("User deleted.");
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            HttpEntity<String> request = new HttpEntity<>(headers);
+            String url = "http://localhost:8080/users/remove";
+            restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            System.out.println("User deleted.");
+        }
+        catch (HttpClientErrorException.Unauthorized e) {
+            System.out.println("Unauthorized, invalid user.");
+        }
         options();
 
+    }
+
+    public void logout(){
+        jwtToken = null;
+        System.out.println("-----------------------------User logged out-------------------------------------");
+        options();
     }
 
     // för debugging
@@ -208,5 +243,6 @@ public class ConsoleApp {
         options();
 
     }
+
 
 }

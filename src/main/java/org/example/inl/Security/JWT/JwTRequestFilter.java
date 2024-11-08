@@ -1,5 +1,7 @@
 package org.example.inl.Security.JWT;
 
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,10 +32,11 @@ public class JwTRequestFilter extends OncePerRequestFilter {
     String username = null;
     String jwt = null;
 
-    if(authHeader != null && authHeader.startsWith("Bearer ")) {
-        jwt = authHeader.substring(7);
-        username = jwTUtil.extractedUsername(jwt);
-    }
+    try{
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+            username = jwTUtil.extractedUsername(jwt);
+        }
 
     if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         if(jwTUtil.validateToken(jwt, username)) {
@@ -41,7 +44,8 @@ public class JwTRequestFilter extends OncePerRequestFilter {
             Long userId = jwTUtil.extractId(jwt);
             request.setAttribute("userId", userId);
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
 
@@ -49,5 +53,12 @@ public class JwTRequestFilter extends OncePerRequestFilter {
     }
     filterChain.doFilter(request, response);
 
+    } catch (MalformedJwtException e) {
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().println("Invalid JWT token");
+    }catch (JwtException e){
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.getWriter().println("Invalid JWT token. Please login to access this page");
+    }
     }
 }

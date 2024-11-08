@@ -39,7 +39,6 @@ public class userController {
 
         boolean authenticated = userService.authenticateUser(consoleUserLogin);
         if (authenticated) {
-            // to-do säkerhetsgrejwer här
             return ResponseEntity.ok("Login successful" + consoleUserLogin.getEmail());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect login details");

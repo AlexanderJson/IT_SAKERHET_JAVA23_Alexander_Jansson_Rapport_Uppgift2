@@ -1,4 +1,4 @@
-package org.example.inl.transactions.model;
+package org.example.inl.Messages.model;
 
 
 import lombok.Getter;
@@ -8,9 +8,8 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class TransactionDTO {
+public class MessagesDTO {
 
-    private String name;
-    private String amount;
+    private String message;
     private LocalDate createdAt;
 }
