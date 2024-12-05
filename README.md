@@ -134,7 +134,7 @@ To set up the backend server and connect it with the API and database, follow th
 
 ## 📸 Gallery
 <details>
-  <summary><strong>View Key Screenshots</strong></summary>
+  <summary><strong>Screenshots</strong></summary>
 
   ### 📝 Add Message
   ![Add Message](src/images/post.png)
