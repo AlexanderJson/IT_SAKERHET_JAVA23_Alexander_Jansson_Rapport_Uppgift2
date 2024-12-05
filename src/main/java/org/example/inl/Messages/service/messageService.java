@@ -58,6 +58,18 @@ public class messageService {
         return messageRepository.save(messages);
     }
 
+    public boolean deleteMessage(Long messageId, String username) throws Exception {
+        User user = UserRepo.findByEmail(username);
+        Optional<Messages> message = messageRepository.findById(messageId);
+        if (message.isPresent() && message.get().getUserId().equals(user.getId())) {
+                messageRepository.deleteById(messageId);
+                return true;
+            }
+            else {
+                throw new Exception("Message could not be deleted!");
+        }
+    }
+
 
 
 

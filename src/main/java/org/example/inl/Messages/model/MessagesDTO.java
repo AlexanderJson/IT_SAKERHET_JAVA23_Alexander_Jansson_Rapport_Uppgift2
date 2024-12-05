@@ -12,4 +12,5 @@ public class MessagesDTO {
 
     private String message;
     private LocalDate createdAt;
+    private Long id;
 }

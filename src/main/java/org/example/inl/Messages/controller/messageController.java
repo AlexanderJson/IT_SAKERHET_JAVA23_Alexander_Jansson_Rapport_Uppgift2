@@ -23,10 +23,6 @@ public class messageController {
     private org.example.inl.users.service.userService userService;
 
 
-//    @GetMapping("/user/{userId}")
-//    public List<Messages> getTransactionByUserId(@PathVariable Long userId) throws Exception {
-//        return Transactionservice.getTransactionsByUserId(userId);
-//    }
 
     @PostMapping("/add")
     public ResponseEntity<?> getMessage(@RequestBody MessagesDTO messagesDTO,
@@ -42,6 +38,38 @@ public class messageController {
         }
 
     }
+
+
+    @DeleteMapping ("/remove")
+    public ResponseEntity<?> removeMessage(@RequestHeader("Authorization") String token, @RequestParam Long messageId) throws Exception  {
+
+        String email = jwTUtil.extractedUsername(token.substring(7));
+        boolean deleted = service.deleteMessage(messageId,email);
+
+        if (deleted) {
+            return ResponseEntity.ok("User deleted successfully");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Failed to delete: " + email);
+        }
+
+    }
+//
+//    @DeleteMapping("/remove")
+//    public ResponseEntity<?> removeMessage(@RequestBody MessagesDTO messagesDTO,
+//                                        @RequestHeader("Authorization") String token) throws Exception {
+//
+//        try{
+//            String username = jwTUtil.extractedUsername(token.substring(7));
+//            service.deleteMessage(messagesDTO.getId(), username);
+//            System.out.println("message to be deleteD: " + messagesDTO.getId());
+//            return ResponseEntity.ok("Message successfully removed");
+//        }
+//        catch(Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+//        }
+//
+//    }
 
     @GetMapping("/user")
     public ResponseEntity<List<Messages>> getMessagesByUserId(@RequestHeader("Authorization") String token) throws Exception {
