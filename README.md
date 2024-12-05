@@ -148,12 +148,6 @@ To set up the backend server and connect it with the API and database, follow th
 
   ---
 
-  ### 🔄 Alternate Home View
-  ![Alternate Home View](src/images/get.png)
-  *Homescreen with console in background to display how they work together*
-
-  ---
-
   ### 🚫 Access Denied [Console]
   ![Access Denied](src/images/unauth.png)
   *Console output indicating unauthorized access when attempting to retrieve protected content*
