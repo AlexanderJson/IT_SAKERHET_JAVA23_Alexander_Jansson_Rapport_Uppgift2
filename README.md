@@ -8,7 +8,7 @@
   
   [![Frontend Repository](https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github)](https://github.com/AlexanderJson/frontend-client-timecapsule)
 
-  ### Frontend README
+  ### Frontend
 
   **Technologies**: Kotlin, Coroutines, LiveData, SharedPreferences, etc.
 
