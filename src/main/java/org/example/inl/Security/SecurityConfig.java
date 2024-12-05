@@ -37,7 +37,6 @@ public class SecurityConfig {
     @Autowired
     private SecureUserDetailsService userDetailsService;
 
-    // mer här sen
     @Autowired
     private JwTRequestFilter jwtRequestFilter;
 
