@@ -168,10 +168,7 @@ To set up the backend server and connect it with the API and database, follow th
 
 ---
 
-> **Note**: Click the "View Key Screenshots" to see screenshots of both app and console!
-
-
-> **Note**: Click on each section to view README info about both repositories!
+> **Note**: Click on each section to view README info about both repositories
 
 
 
