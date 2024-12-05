@@ -54,22 +54,6 @@ public class messageController {
         }
 
     }
-//
-//    @DeleteMapping("/remove")
-//    public ResponseEntity<?> removeMessage(@RequestBody MessagesDTO messagesDTO,
-//                                        @RequestHeader("Authorization") String token) throws Exception {
-//
-//        try{
-//            String username = jwTUtil.extractedUsername(token.substring(7));
-//            service.deleteMessage(messagesDTO.getId(), username);
-//            System.out.println("message to be deleteD: " + messagesDTO.getId());
-//            return ResponseEntity.ok("Message successfully removed");
-//        }
-//        catch(Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
-//        }
-//
-//    }
 
     @GetMapping("/user")
     public ResponseEntity<List<Messages>> getMessagesByUserId(@RequestHeader("Authorization") String token) throws Exception {
