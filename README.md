@@ -6,11 +6,11 @@
 <details>
   <summary><strong>Frontend Repository</strong></summary>
   
-  [![Frontend Repository](https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github)](https://github.com/AlexanderJson/frontend-client-timecapsule)
+# Frontend Repository
 
-  ### Frontend
+[![Frontend Repository](https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github)](https://github.com/AlexanderJson/frontend-client-timecapsule)
 
-  **Technologies**: Kotlin, Coroutines, LiveData, SharedPreferences, etc.
+---
 
   **Description**: An app for writing notes and messages to yourself! Stored securily. 
 
@@ -25,11 +25,6 @@
    ```bash
    git clone https://github.com/AlexanderJson/frontend-client-timecapsule.git
 
- 
-
-# 🌌 TimeCapsule App – Frontend Repository
-
-[![Frontend Repository](https://img.shields.io/badge/Frontend-Repository-1E2A78?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlexanderJson/frontend-client-timecapsule)
 
 ---
 
